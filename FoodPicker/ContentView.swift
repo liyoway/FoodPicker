@@ -12,29 +12,29 @@ struct ContentView: View {
     @State private var shouldShowInfo: Bool = false
     let food = Food.examples
     var body: some View {
-    ScrollView {
-        VStack(spacing: 30.0) {
-            foodImage
-            
-            Text("今天吃什麼？").bold()
-            
-            selectFoodInfoView
-            
-            Spacer().layoutPriority(0)
-            
-            selectedFoodButton
-            
-            cancelButton
+        ScrollView {
+            VStack(spacing: 30.0) {
+                foodImage
+                
+                Text("今天吃什麼？").bold()
+                
+                selectFoodInfoView
+                
+                Spacer().layoutPriority(0)
+                
+                selectedFoodButton
+                
+                cancelButton
+            }
+            .padding()
+            .frame(maxWidth: .infinity, minHeight: UIScreen.main.bounds.height - 100)
+            .font(.largeTitle)
+            .animation(. mySpring, value: shouldShowInfo)
+            .animation(.myEase, value: selectedFood)
+            .mainButtonStyle()
         }
-        .padding()
-        .frame(maxWidth: .infinity, minHeight: UIScreen.main.bounds.height - 100)
-        .font(.largeTitle)
-        .animation(. mySpring, value: shouldShowInfo)
-        .animation(.myEase, value: selectedFood)
-        .mainButtonStyle()
+        .background(Color.bg2)
     }
-    .background(Color.bg2)
-}
 }
     
 private extension ContentView {
@@ -42,7 +42,7 @@ private extension ContentView {
     @ViewBuilder var selectFoodInfoView: some View {
         if selectedFood != nil {
             foodNameView
-            Text("熱量\(Int(selectedFood!.calorie)) 大卡").font(.title2)
+            Text("熱量\(selectedFood!.$calorie)").font(.title2)
         }
         foodDetailView
         
@@ -83,10 +83,7 @@ private extension ContentView {
         VStack {
             if shouldShowInfo {
                 Grid(horizontalSpacing: 12, verticalSpacing: 12) {
-                    let protein = Int(selectedFood!.protein)
-                    let fat = Int(selectedFood!.fat)
-                    let carb = Int(selectedFood!.carb)
-                    
+                      
                     GridRow {
                         Text("蛋白質")
                         Text("脂肪")
@@ -98,9 +95,9 @@ private extension ContentView {
                         .padding(.horizontal, -10)
                     
                     GridRow {
-                        Text("\(protein)g")
-                        Text("\(fat)g")
-                        Text("\(carb)g")
+                        Text(selectedFood!.$protein)
+                        Text(selectedFood!.$fat)
+                        Text(selectedFood!.$carb)
                     }
                 }
                 .font(.title3)
@@ -114,6 +111,7 @@ private extension ContentView {
         .frame(maxWidth: .infinity)
         
     }
+    
     var selectedFoodButton: some View {
         Button(role: .none) {
             selectedFood = food.randomElement()
