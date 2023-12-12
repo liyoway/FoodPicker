@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		14161AD42B18E8CF00BD7BDC /* FoodListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14161AD32B18E8CF00BD7BDC /* FoodListView.swift */; };
+		1421AA8C2B28ABB2002C5F13 /* FoodForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1421AA8B2B28ABB2002C5F13 /* FoodForm.swift */; };
 		14595F3C2B0A6D1D009D8AB1 /* extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14595F3B2B0A6D1D009D8AB1 /* extensions.swift */; };
 		14595F3E2B0BA5F9009D8AB1 /* SuffixWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14595F3D2B0BA5F9009D8AB1 /* SuffixWrapper.swift */; };
 		146217092ABB4D3800C0F423 /* FoodPickerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 146217082ABB4D3800C0F423 /* FoodPickerApp.swift */; };
@@ -17,6 +19,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		14161AD32B18E8CF00BD7BDC /* FoodListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodListView.swift; sourceTree = "<group>"; };
+		1421AA8B2B28ABB2002C5F13 /* FoodForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodForm.swift; sourceTree = "<group>"; };
 		14595F3B2B0A6D1D009D8AB1 /* extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = extensions.swift; sourceTree = "<group>"; };
 		14595F3D2B0BA5F9009D8AB1 /* SuffixWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuffixWrapper.swift; sourceTree = "<group>"; };
 		146217052ABB4D3800C0F423 /* FoodPicker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FoodPicker.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -59,6 +63,8 @@
 			children = (
 				146217082ABB4D3800C0F423 /* FoodPickerApp.swift */,
 				1462170A2ABB4D3800C0F423 /* ContentView.swift */,
+				1421AA8B2B28ABB2002C5F13 /* FoodForm.swift */,
+				14161AD32B18E8CF00BD7BDC /* FoodListView.swift */,
 				1462170C2ABB4D3900C0F423 /* Assets.xcassets */,
 				1462170E2ABB4D3900C0F423 /* Preview Content */,
 			);
@@ -146,6 +152,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				14161AD42B18E8CF00BD7BDC /* FoodListView.swift in Sources */,
+				1421AA8C2B28ABB2002C5F13 /* FoodForm.swift in Sources */,
 				1462170B2ABB4D3800C0F423 /* ContentView.swift in Sources */,
 				146217092ABB4D3800C0F423 /* FoodPickerApp.swift in Sources */,
 				14B30A4C2B028EC700D6FE78 /* food.swift in Sources */,

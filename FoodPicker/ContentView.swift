@@ -33,16 +33,16 @@ struct ContentView: View {
             .animation(.myEase, value: selectedFood)
             .mainButtonStyle()
         }
-        .background(Color.bg2)
+        .background(.bg2)
     }
 }
     
 private extension ContentView {
     //MARK: subViews
     @ViewBuilder var selectFoodInfoView: some View {
-        if selectedFood != nil {
+        if let selectedFood {
             foodNameView
-            Text("熱量\(selectedFood!.$calorie)").font(.title2)
+            Text("熱量\(selectedFood.$calorie)").font(.title2)
         }
         foodDetailView
         
@@ -50,8 +50,8 @@ private extension ContentView {
     }
     var foodImage: some View {
         Group {
-            if selectedFood != nil {
-                Text(selectedFood!.image)
+            if let selectedFood {
+                Text(selectedFood.image)
                     .font(.system(size: 200))
                     .minimumScaleFactor(0.1)
                     .lineLimit(1)
