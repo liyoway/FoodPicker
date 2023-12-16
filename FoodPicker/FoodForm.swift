@@ -9,6 +9,7 @@ import SwiftUI
 
 extension FoodListView {
     struct FoodForm: View {
+        @Environment(\.dismiss) var dismiss
         @State var food: Food
         private var isNotValid: Bool {
             food.name.isEmpty || food.image.count > 2
@@ -25,16 +26,30 @@ extension FoodListView {
 
         var body: some View {
             VStack {
-                Label("編輯食物資訊", systemImage: "pencil")
-                    .font(.title.bold())
-                    .foregroundColor(.accentColor)
+                HStack {
+                    Label("編輯食物資訊", systemImage: "pencil")
+                        .font(.title.bold())
+                        .foregroundColor(.accentColor)
+                        .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, alignment: .leading)
+                    
+                    Image(systemName: "xmark.circle.fill")
+                        .font(.largeTitle.bold())
+                        .foregroundColor(.secondary)
+                        .onTapGesture {
+                            dismiss()
+                        }
+                }
+                .padding([.horizontal, .top])
 
                 Form {
                     LabeledContent("名稱") {
                         TextField("必填", text: $food.name)
+                            .submitLabel(.next)
                     }
                     LabeledContent("圖示") {
                         TextField("最多輸入兩個字元", text: $food.image)
+                            .submitLabel(.next)
+
                     }
                     
                     buildNumberField(title: "熱量", value: $food.calorie, suffix: "大卡")
@@ -42,10 +57,11 @@ extension FoodListView {
                     buildNumberField(title: "脂肪", value: $food.fat)
                     buildNumberField(title: "碳水", value: $food.carb)
                 }
+                .padding(.top, -16)
                 
                 Button(action: {}, label: {
                     Text( invalidMessage ?? "儲存")
-                        .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/)
+                        .frame(maxWidth: .infinity)
                 }).mainButtonStyle()
                     .padding()
                     .disabled(isNotValid)
@@ -53,12 +69,14 @@ extension FoodListView {
             .background(.groupBG)
             .multilineTextAlignment(.trailing)
             .font(.title3)
+            .scrollDismissesKeyboard(.interactively)
         }
 
         private func buildNumberField(title: String, value: Binding<Double>, suffix: String = "g") -> some View {
             LabeledContent(title) {
                 HStack {
                     TextField("", value: value, format: .number.precision(.fractionLength(1)))
+                        .keyboardType(.decimalPad)
                     Text(suffix)
                 }
             }
