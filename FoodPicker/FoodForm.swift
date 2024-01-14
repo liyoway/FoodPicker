@@ -10,7 +10,10 @@ import SwiftUI
 extension FoodListView {
     struct FoodForm: View {
         @Environment(\.dismiss) var dismiss
+//        @FocusState private var filed: MyField?
         @State var food: Food
+        var onSubmit: (Food) -> Void
+        
         private var isNotValid: Bool {
             food.name.isEmpty || food.image.count > 2
         }
@@ -59,10 +62,16 @@ extension FoodListView {
                 }
                 .padding(.top, -16)
                 
-                Button(action: {}, label: {
+                Button{ 
+                    dismiss()
+                    onSubmit(food)
+                    
+                } label: {
                     Text( invalidMessage ?? "儲存")
                         .frame(maxWidth: .infinity)
-                }).mainButtonStyle()
+                        .bold()
+                }
+                .mainButtonStyle()
                     .padding()
                     .disabled(isNotValid)
             }
@@ -85,5 +94,5 @@ extension FoodListView {
 }
 
 #Preview {
-    FoodListView.FoodForm(food: Food.examples.first!)
+    FoodListView.FoodForm(food: Food.examples.first!) {_ in }
 }
