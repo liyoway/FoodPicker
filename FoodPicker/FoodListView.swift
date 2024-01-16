@@ -8,14 +8,17 @@
 import SwiftUI
 
 struct FoodListView: View {
+    @Environment(\.editMode) var editMode
     @State private var food = Food.examples
-    @State private var seletedFood = Set<Food.ID>()
+    @State private var selectedFood = Set<Food.ID>()
+    
+    var isEditing: Bool { editMode?.wrappedValue == .active }
     
     var body: some View {
         VStack(alignment: .leading) {
             titleBar
             
-            List($food, editActions: .all, selection: $seletedFood) { $food in
+            List($food, editActions: .all, selection: $selectedFood) { $food in
                 Text(food.name)
            }
             .listStyle(.plain)
@@ -23,11 +26,10 @@ struct FoodListView: View {
             
         }
         .background(.groupBG)
-        .safeAreaInset(edge: .bottom, alignment: .trailing) {
-            addButton
+        .safeAreaInset(edge: .bottom, content: buildFloatButton)
         }
     }
-}
+
 
 private extension FoodListView {
     
@@ -53,6 +55,37 @@ private extension FoodListView {
         }
 
     }
+    
+    var removeButton : some View {
+        Button {
+            withAnimation {
+                food = food.filter { !selectedFood.contains($0.id) }
+            }
+        } label: {
+            Text("刪除全部")
+                .font(.title2.bold())
+                .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+        }
+        .mainButtonStyle(shape: .roundedRectangle(radius: 8))
+        .padding(.horizontal, 50)
+    }
+    
+    func buildFloatButton() -> some View {
+        ZStack {
+                removeButton
+                .transition(.move(edge: .leading).combined(with: .opacity).animation(.easeInOut))
+                .opacity(isEditing ? 1 : 0)
+                .id(isEditing)
+            
+                HStack {
+                    Spacer()
+                    addButton
+                        .scaleEffect(isEditing ? 0 : 1)
+                        .opacity(isEditing ? 0 : 1)
+                        .animation(.easeInOut, value: isEditing)
+                }
+            }
+        }
 }
 
 #Preview {
