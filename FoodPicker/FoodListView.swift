@@ -10,44 +10,82 @@ import SwiftUI
 struct FoodListView: View {
     @Environment(\.editMode) var editMode
     @Environment(\.dynamicTypeSize) var textSize
+    @State private var shouldShowSheet = false
     @State private var food = Food.examples
     @State private var selectedFood = Set<Food.ID>()
-    
-    var isEditing: Bool { editMode?.wrappedValue == .active }
+    @State private var foodDetailHeight: CGFloat = FoodDetailSheetHeightKey.defaultValue
+
+    var isEditing: Bool {
+        editMode?.wrappedValue == .active
+    }
     
     var body: some View {
         VStack(alignment: .leading) {
             titleBar
-            
+
             List($food, editActions: .all, selection: $selectedFood) { $food in
-                Text(food.name).padding(.vertical, 10)
-           }
+                HStack {
+                    Text(food.name).padding(.vertical, 10)
+                        .frame(width: .infinity, alignment: .leading)
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            if isEditing { return }
+                            shouldShowSheet = true
+                        }
+                    Spacer()
+                    if isEditing {
+                        Image(systemName: "pencil")
+                            .font(.title2.bold())
+                            .foregroundColor(.accentColor)
+                    }
+                }
+                
+            }
             .listStyle(.plain)
             .padding(.horizontal)
-            
         }
         .background(.groupBG)
         .safeAreaInset(edge: .bottom, content: buildFloatButton)
-        .sheet(isPresented: .constant(true)) {
-            let food = food.first!
+        .sheet(isPresented: $shouldShowSheet) {
+            let food = food[4]
             let shouldUseVstack = textSize.isAccessibilitySize || food.image.count > 1
-            
+
             AnyLayout.useVStack(if: shouldUseVstack, spacing: 30) {
                 Text(food.image)
                     .font(.system(size: 100))
                     .lineLimit(1)
-                    .minimumScaleFactor(0.5)
+                    .minimumScaleFactor(shouldUseVstack ? 1 : 0.5)
                 Grid(horizontalSpacing: 30, verticalSpacing: 12) {
                     buildNutrionView(title: "熱量", value: food.$calorie)
                     buildNutrionView(title: "蛋白質", value: food.$protein)
                     buildNutrionView(title: "脂肪", value: food.$fat)
                     buildNutrionView(title: "碳水", value: food.$carb)
-                }.presentationDetents([.medium])
-                    .padding()
+                }
+            }
+            .padding()
+            .padding(.vertical)
+            .overlay {
+                GeometryReader { proxy in
+                    Color.clear.preference(key: FoodDetailSheetHeightKey.self, value: proxy.size.height)
+                }
+                .onPreferenceChange(FoodDetailSheetHeightKey.self) {
+                    foodDetailHeight = $0
+                }
+                .presentationDetents([.height(foodDetailHeight)])
             }
         }
     }
-        
+}
+
+private extension FoodListView {
+    
+    struct FoodDetailSheetHeightKey: PreferenceKey {
+        static var defaultValue: CGFloat = 300 // 提供預設值
+
+        static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+            value = nextValue()
+        }
+    }
 }
 
 private extension FoodListView {
@@ -61,7 +99,8 @@ private extension FoodListView {
             
             EditButton()
                 .buttonStyle(.bordered)
-        } .padding()
+        }
+        .padding()
     }
     
     var addButton : some View {
@@ -72,7 +111,6 @@ private extension FoodListView {
                 .symbolRenderingMode(.palette)
                 .foregroundStyle(.white, Color.accentColor.gradient)
         }
-        
     }
     
     var removeButton : some View {
@@ -83,7 +121,7 @@ private extension FoodListView {
         } label: {
             Text("刪除全部")
                 .font(.title2.bold())
-                .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+                .frame(maxWidth: .infinity, alignment: .center)
         }
         .mainButtonStyle(shape: .roundedRectangle(radius: 8))
         .padding(.horizontal, 50)
@@ -99,7 +137,7 @@ private extension FoodListView {
             HStack {
                 Spacer()
                 addButton
-                    .scaleEffect(isEditing ? 0 : 1)
+                    .scaleEffect(isEditing ? 0.0001 : 1)
                     .opacity(isEditing ? 0 : 1)
                     .animation(.easeInOut, value: isEditing)
             }
@@ -110,11 +148,10 @@ private extension FoodListView {
         GridRow {
             Text(title).gridCellAnchor(.leading)
             Text(value).gridCellAnchor(.trailing)
-            
         }
     }
 }
 
 #Preview {
-    FoodListView()
-}
+     FoodListView()
+ }
